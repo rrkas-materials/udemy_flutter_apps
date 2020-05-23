@@ -4,7 +4,5 @@ class HTTPException implements Exception {
   HTTPException(this.msg);
 
   @override
-  String toString() {
-    return msg;
-  }
+  String toString() => msg;
 }

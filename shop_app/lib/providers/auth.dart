@@ -17,15 +17,27 @@ class Auth with ChangeNotifier {
 
   Future<void> signUp(String email, String pwd) async {
     final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_API_KEY';
-    final response = await http.post(
-      url,
-      body: json.encode({
-        _EMAIL: email,
-        _PASSWORD: pwd,
-        _RETURN_SECURE_TOKEN: true,
-      }),
-    );
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=$_API_KEY';
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          _EMAIL: email,
+          _PASSWORD: pwd,
+          _RETURN_SECURE_TOKEN: true,
+        }),
+      );
+      final responseData = json.decode(response.body);
+      if (responseData['error'] != null) {
+        throw HTTPException(responseData['error']['message']);
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  Future<void> signUp(String email, String pwd) async {
+    return _authenticate(email, pwd, 'signUp');
   }
 
   Future<void> signIn(String email, String pwd) async {
