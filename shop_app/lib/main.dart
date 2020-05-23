@@ -12,6 +12,9 @@ import 'package:shopapp/screens/products_detail_screen.dart';
 import 'package:shopapp/screens/user_products_screen.dart';
 import 'package:shopapp/utils/routes_names.dart';
 
+import 'screens/products_overview_screen.dart';
+import 'utils/routes_names.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -24,22 +27,26 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Cart()),
         ChangeNotifierProvider.value(value: Orders()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'MyShop',
-        theme: ThemeData(
-            primarySwatch: Colors.purple,
-            accentColor: Colors.deepOrange,
-            fontFamily: 'Lato'),
-        home: AuthScreen(),
-        routes: {
-          PRODUCT_DETAIL_SCREEN_ROUTE: (_) => ProductsDetailScreen(),
-          CART_SCREEN_ROUTE: (_) => CartsScreen(),
-          ORDERS_SCREEN_ROUTE: (_) => OrdersScreen(),
-          USER_PRODUCTS_SCREEN_ROUTE: (_) => UserProductsScreen(),
-          EDIT_PRODUCT_SCREEN_ROUTE: (_) => EditProductScreen(),
-          AUTH_ROUTE: (_) => AuthScreen()
-        },
+      child: Consumer<Auth>(
+        builder: (context, value, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'MyShop',
+          theme: ThemeData(
+              primarySwatch: Colors.purple,
+              accentColor: Colors.deepOrange,
+              fontFamily: 'Lato'),
+          home: value.isAuth ? ProductsOverviewScreen() : Auth(),
+          routes: {
+            RouteNames.PRODUCT_OVERVIEW_SCREEN: (_) => ProductsOverviewScreen(),
+            RouteNames.PRODUCT_DETAIL_SCREEN_ROUTE: (_) =>
+                ProductsDetailScreen(),
+            RouteNames.CART_SCREEN_ROUTE: (_) => CartsScreen(),
+            RouteNames.ORDERS_SCREEN_ROUTE: (_) => OrdersScreen(),
+            RouteNames.USER_PRODUCTS_SCREEN_ROUTE: (_) => UserProductsScreen(),
+            RouteNames.EDIT_PRODUCT_SCREEN_ROUTE: (_) => EditProductScreen(),
+            RouteNames.AUTH_ROUTE: (_) => AuthScreen()
+          },
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shopapp/providers/auth.dart';
 
 import '../exceptions/http_exception.dart';
+import '../utils/routes_names.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -137,6 +138,8 @@ class _AuthCardState extends State<AuthCard> {
           _authData['password'],
         );
       }
+      Navigator.of(context)
+          .pushReplacementNamed(RouteNames.PRODUCT_OVERVIEW_SCREEN);
     } on HTTPException catch (err) {
       var msg = 'Authentication failed!';
       if (err.toString().contains("EMAIL_EXISTS")) {

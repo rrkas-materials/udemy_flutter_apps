@@ -3,19 +3,34 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
+import '../exceptions/http_exception.dart';
+
 class Auth with ChangeNotifier {
   static const _API_KEY = 'AIzaSyCO58bWMwxoRcjiC6jmU1pF2RuCQgMnqGA';
   static const _EMAIL = 'email';
   static const _PASSWORD = 'password';
   static const _RETURN_SECURE_TOKEN = 'returnSecureToken';
+  static const _ID_TOKEN = 'idToken';
+  static const _USER_ID = 'localId';
 
   String _token;
   DateTime _expiryDate;
   String _userId;
 
-  Future _authenticate(email, pwd) async {}
+  bool get isAuth {
+    return token != null;
+  }
 
-  Future<void> signUp(String email, String pwd) async {
+  String get token {
+    if (_expiryDate != null &&
+        _expiryDate.isAfter(DateTime.now()) &&
+        _token != null) {
+      return _token;
+    }
+    return null;
+  }
+
+  Future _authenticate(String email, String pwd, String urlSegment) async {
     final url =
         'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=$_API_KEY';
     try {
@@ -31,6 +46,16 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HTTPException(responseData['error']['message']);
       }
+      _token = responseData[_ID_TOKEN];
+      _userId = responseData[_USER_ID];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseData['expiresIn'],
+          ),
+        ),
+      );
+      notifyListeners();
     } catch (err) {
       throw err;
     }
@@ -41,15 +66,6 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signIn(String email, String pwd) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_API_KEY';
-    final response = await http.post(
-      url,
-      body: json.encode({
-        _EMAIL: email,
-        _PASSWORD: pwd,
-        _RETURN_SECURE_TOKEN: true,
-      }),
-    );
+    return _authenticate(email, pwd, 'signInWithPassword');
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/providers/cart.dart';
+
 import '../providers/product.dart';
 import '../utils/routes_names.dart';
 
@@ -14,8 +15,9 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context)
-                .pushNamed(PRODUCT_DETAIL_SCREEN_ROUTE, arguments: product.id);
+            Navigator.of(context).pushNamed(
+                RouteNames.PRODUCT_DETAIL_SCREEN_ROUTE,
+                arguments: product.id);
             //whole product could also be forwarded, but following tutorial...
           },
           child: Image.network(
