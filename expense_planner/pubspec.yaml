@@ -1,0 +1,64 @@
+name: expenseplanner
+description: Records expenses and shows last week expenses daywise.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.16.1
+  path_provider: ^1.6.5
+  cupertino_icons: ^0.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+   - assets/images/waiting.png
+  
+
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+fonts:
+ - family: OpenSans
+   fonts:
+     - asset: assets/fonts/OpenSans-Bold.ttf
+       weight: 700
+     - asset: assets/fonts/OpenSans-Regular.ttf
+ - family: Quicksand
+   fonts:
+     - asset: assets/fonts/Quicksand-Bold.ttf
+       weight: 700
+     - asset: assets/fonts/Quicksand-Regular.ttf
+ - family: times
+   fonts:
+     - asset: assets/fonts/times-new-roman.ttf
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
