@@ -22,22 +22,20 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   void initState() {
 //    Provider.of<ProductsProvider>(context).fetchAndSetProducts();
-//    Future.delayed(Duration.zero).then(
-//      (_) => Provider.of<ProductsProvider>(context)
-//          .fetchAndSetProducts(),
-//    );
+    Future.delayed(Duration.zero).then((_) async {
+      if (_isInit) {
+        setState(() => _loading = true);
+        await Provider.of<ProductsProvider>(context, listen: false)
+            .fetchAndSetProducts();
+        if (mounted) setState(() => _loading = false);
+      }
+      _isInit = false;
+    });
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    if (_isInit) {
-      setState(() => _loading = true);
-      Provider.of<ProductsProvider>(context)
-          .fetchAndSetProducts()
-          .then((_) => setState(() => _loading = false));
-    }
-    _isInit = false;
     super.didChangeDependencies();
   }
 

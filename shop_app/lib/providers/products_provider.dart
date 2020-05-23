@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shopapp/exceptions/http_exception.dart';
-import 'package:shopapp/screens/edit_product_screen.dart';
-import './product.dart';
 import 'package:http/http.dart' as http;
+import 'package:shopapp/exceptions/http_exception.dart';
+
+import './product.dart';
 
 class ProductsProvider with ChangeNotifier {
   static const ID = 'id';
@@ -14,7 +14,9 @@ class ProductsProvider with ChangeNotifier {
   static const URL = 'url';
   static const IS_FAV = 'isFav';
 
-  static const url = 'https://shop-app-41486.firebaseio.com/products.json';
+  final String authToken;
+
+  ProductsProvider(this.authToken, this._items);
 
   List<Product> _items = [
 //    Product(
@@ -74,11 +76,13 @@ class ProductsProvider with ChangeNotifier {
 //  }
 
   Future<void> fetchAndSetProducts() async {
+    final url = 'https://shop-app-41486.firebaseio.com/products'
+        '.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
-      if(extractedData==null) return;
+      if (extractedData == null) return;
       extractedData.forEach((id, prodData) {
         loadedProducts.add(Product(
             id: id,
@@ -96,10 +100,12 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Product findById(String id) {
-    return _items.firstWhere((element) => element.id == id);
+    return _items.firstWhere((element) => element.id == id, orElse: () => null);
   }
 
   Future<void> addProducts(Product product) async {
+    final url = 'https://shop-app-41486.firebaseio.com/products'
+        '.json?auth=$authToken';
     try {
       final response = await http.post(
         url,

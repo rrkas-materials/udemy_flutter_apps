@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shopapp/providers/auth.dart';
 import 'package:shopapp/providers/cart.dart';
 import 'package:shopapp/providers/orders.dart';
-import 'package:shopapp/providers/products_provider.dart';
 import 'package:shopapp/screens/auth_screen.dart';
 import 'package:shopapp/screens/carts_screen.dart';
 import 'package:shopapp/screens/edit_product_screen.dart';
@@ -12,6 +11,8 @@ import 'package:shopapp/screens/products_detail_screen.dart';
 import 'package:shopapp/screens/user_products_screen.dart';
 import 'package:shopapp/utils/routes_names.dart';
 
+import 'providers/products_provider.dart';
+import 'screens/auth_screen.dart';
 import 'screens/products_overview_screen.dart';
 import 'utils/routes_names.dart';
 
@@ -23,7 +24,13 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: Auth()),
-        ChangeNotifierProvider.value(value: ProductsProvider()),
+        ChangeNotifierProxyProvider<Auth, ProductsProvider>(
+          create: null,
+          update: (ctx, auth, prevProducts) => ProductsProvider(
+            auth.token,
+            prevProducts == null ? [] : prevProducts.getItems,
+          ),
+        ),
         ChangeNotifierProvider.value(value: Cart()),
         ChangeNotifierProvider.value(value: Orders()),
       ],
@@ -35,7 +42,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.purple,
               accentColor: Colors.deepOrange,
               fontFamily: 'Lato'),
-          home: value.isAuth ? ProductsOverviewScreen() : Auth(),
+          home: value.isAuth ? ProductsOverviewScreen() : AuthScreen(),
           routes: {
             RouteNames.PRODUCT_OVERVIEW_SCREEN: (_) => ProductsOverviewScreen(),
             RouteNames.PRODUCT_DETAIL_SCREEN_ROUTE: (_) =>
