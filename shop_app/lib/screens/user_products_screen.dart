@@ -9,12 +9,12 @@ import 'package:shopapp/widgets/user_product_item.dart';
 class UserProductsScreen extends StatelessWidget {
   Future<void> _refreshProducts(context) async {
     await Provider.of<ProductsProvider>(context, listen: false)
-        .fetchAndSetProducts();
+        .fetchAndSetProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<ProductsProvider>(context);
+//    final productsProvider = Provider.of<ProductsProvider>(context);
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
@@ -29,21 +29,31 @@ class UserProductsScreen extends StatelessWidget {
           )
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListView.builder(
-              itemCount: productsProvider.getItems.length,
-              itemBuilder: (_, idx) => Column(
-                    children: <Widget>[
-                      UserProductItem(
-                        product: productsProvider.getItems[idx],
+      body: FutureBuilder(
+        future: _refreshProducts(context),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshProducts(context),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Consumer<ProductsProvider>(
+                        builder: (ctx, productsProvider, _) => ListView.builder(
+                            itemCount: productsProvider.getItems.length,
+                            itemBuilder: (_, idx) => Column(
+                                  children: <Widget>[
+                                    UserProductItem(
+                                      product: productsProvider.getItems[idx],
+                                    ),
+                                    Divider(),
+                                  ],
+                                )),
                       ),
-                      Divider(),
-                    ],
-                  )),
-        ),
+                    ),
+                  ),
       ),
     );
   }
