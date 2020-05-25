@@ -135,7 +135,8 @@ class ProductsProvider with ChangeNotifier {
     final idx = _items.indexWhere((element) => element.id == product.id);
     if (idx >= 0) {
       final url =
-          'https://shop-app-41486.firebaseio.com/products/${product.id}.json';
+          'https://shop-app-41486.firebaseio.com/products/${product.id}'
+          '.json?auth=$authToken';
       http.patch(url,
           body: json.encode({
             TITLE: product.title,
@@ -151,7 +152,8 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> deleteProduct(Product product) async {
     final url =
-        'https://shop-app-41486.firebaseio.com/products/${product.id}.json';
+        'https://shop-app-41486.firebaseio.com/products/${product.id}'
+        '.json?auth=$authToken';
     final existingIdx = _items.indexWhere(
       (element) => element.id == product.id,
     );
