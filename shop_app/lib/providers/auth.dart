@@ -17,9 +17,7 @@ class Auth with ChangeNotifier {
   DateTime _expiryDate;
   String _userId;
 
-  bool get isAuth {
-    return token != null;
-  }
+  bool get isAuth => token != null;
 
   String get token {
     if (_expiryDate != null &&
@@ -63,11 +61,17 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> signUp(String email, String pwd) async {
-    return _authenticate(email, pwd, 'signUp');
-  }
+  Future<void> signUp(String email, String pwd) async =>
+      _authenticate(email, pwd, 'signUp');
 
-  Future<void> signIn(String email, String pwd) async {
-    return _authenticate(email, pwd, 'signInWithPassword');
+  Future<void> signIn(String email, String pwd) async =>
+      _authenticate(email, pwd, 'signInWithPassword');
+
+  void logout() {
+    _userId = null;
+    _token = null;
+    _expiryDate = null;
+    notifyListeners();
+    print('log out called');
   }
 }
