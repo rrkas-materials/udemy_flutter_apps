@@ -91,18 +91,20 @@ class ProductsProvider with ChangeNotifier {
           'https://shop-app-41486.firebaseio.com/userFavorites/$_uid.json?auth=$_authToken';
       final favResponse = await http.get(url);
       final favData = json.decode(favResponse.body);
-      extractedData.forEach((id, prodData) {
-        loadedProducts.add(
-          Product(
-            id: id,
-            title: prodData[TITLE],
-            desc: prodData[DESC],
-            price: prodData[PRICE],
-            imageURL: prodData[URL],
-            isFavourite: favData == null ? false : favData[id] ?? false,
-          ),
-        );
-      });
+      extractedData.forEach(
+        (id, prodData) {
+          loadedProducts.add(
+            Product(
+              id: id,
+              title: prodData[TITLE],
+              desc: prodData[DESC],
+              price: prodData[PRICE],
+              imageURL: prodData[URL],
+              isFavourite: favData == null ? false : favData[id] ?? false,
+            ),
+          );
+        },
+      );
       _items = loadedProducts;
       notifyListeners();
     } catch (e) {

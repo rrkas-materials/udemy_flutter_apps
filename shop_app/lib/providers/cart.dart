@@ -29,9 +29,7 @@ class Cart with ChangeNotifier {
 
   double get totAmt {
     double tot = 0.0;
-    _items.forEach((key, value) {
-      tot += value.price * value.qty;
-    });
+    _items.forEach((key, value) => tot += value.price * value.qty);
     return tot;
   }
 

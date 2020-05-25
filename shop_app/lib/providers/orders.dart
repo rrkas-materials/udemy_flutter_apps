@@ -27,16 +27,17 @@ class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
 
   final String authToken;
+  final String uid;
 
-  Orders(this.authToken, this._orders);
+  Orders(this.authToken, this.uid, this._orders);
 
   List<OrderItem> get getOrders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
-    final url =
-        'https://shop-app-41486.firebaseio.com/orders.json?auth=$authToken';
+    final url = 'https://shop-app-41486.firebaseio.com/orders/$uid'
+        '.json?auth=$authToken';
     final response = await http.get(url);
     print(response.body);
     final List<OrderItem> loadedOrders = [];
@@ -66,11 +67,13 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartItems, double total) async {
-    final url =
-        'https://shop-app-41486.firebaseio.com/orders.json?auth=$authToken';
+    final url = 'https://shop-app-41486.firebaseio.com/orders/$uid'
+        '.json?auth=$authToken';
     final timestamp = DateTime.now();
-    final response = await http.post(url,
-        body: json.encode({
+    final response = await http.post(
+      url,
+      body: json.encode(
+        {
           OrderItem.AMOUNT: total,
           OrderItem.DATETIME: timestamp.toIso8601String(),
           OrderItem.PRODUCTS: cartItems
@@ -81,7 +84,9 @@ class Orders with ChangeNotifier {
                     CartItem.PRICE: cp.price,
                   })
               .toList(),
-        }));
+        },
+      ),
+    );
     _orders.insert(
       0,
       OrderItem(
