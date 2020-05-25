@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
           create: null,
           update: (ctx, auth, prevProducts) => ProductsProvider(
             auth.token,
+            auth.uid,
             prevProducts == null ? [] : prevProducts.getItems,
           ),
         ),
