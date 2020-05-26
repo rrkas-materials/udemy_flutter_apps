@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shopapp/providers/cart.dart';
+import '../providers/cart.dart';
 import 'package:http/http.dart' as http;
 
 class OrderItem {

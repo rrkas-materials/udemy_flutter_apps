@@ -3,10 +3,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shopapp/providers/cart.dart';
-import 'package:shopapp/providers/orders.dart';
-//import 'package:shopapp/providers/product.dart';
-//import 'package:shopapp/widgets/product_item.dart';
+
+import '../providers/cart.dart';
+import '../providers/orders.dart';
+
+//import '../providers/product.dart';
+//import '../widgets/product_item.dart';
 
 class OrderItemWidget extends StatefulWidget {
   final OrderItem orderItem;

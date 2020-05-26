@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopapp/providers/cart.dart';
-import 'package:shopapp/providers/products_provider.dart';
-import 'package:shopapp/utils/routes_names.dart';
-import 'package:shopapp/widgets/app_drawer.dart';
-import 'package:shopapp/widgets/badge.dart';
-import 'package:shopapp/widgets/products_grid.dart';
+
+import '../providers/cart.dart';
+import '../providers/products_provider.dart';
+import '../utils/routes_names.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/badge.dart';
+import '../widgets/products_grid.dart';
 
 enum FilterOptions { Fav, All }
 
@@ -19,23 +20,29 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool _isInit = true;
   bool _loading = false;
 
-  @override
-  void initState() {
-//    Provider.of<ProductsProvider>(context).fetchAndSetProducts();
-    Future.delayed(Duration.zero).then((_) async {
-      if (_isInit) {
-        setState(() => _loading = true);
-        await Provider.of<ProductsProvider>(context, listen: false)
-            .fetchAndSetProducts();
-        if (mounted) setState(() => _loading = false);
-      }
-      _isInit = false;
-    });
-    super.initState();
-  }
-
+//  @override
+//  void initState() {
+//    super.initState();
+//  }
+//
   @override
   void didChangeDependencies() {
+    try {
+      Future.delayed(Duration.zero).then(
+        (_) async {
+          if (_isInit) {
+            setState(() => _loading = true);
+            await Provider.of<ProductsProvider>(context, listen: false)
+                .fetchAndSetProducts()
+                .then((_) => setState(() => _loading = false))
+                .catchError((err) => print(err));
+          }
+          _isInit = false;
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
     super.didChangeDependencies();
   }
 

@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopapp/providers/products_provider.dart';
-import 'package:shopapp/utils/routes_names.dart';
-import 'package:shopapp/widgets/app_drawer.dart';
-import 'package:shopapp/widgets/user_product_item.dart';
+
+import '../providers/products_provider.dart';
+import '../utils/routes_names.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/user_product_item.dart';
 
 class UserProductsScreen extends StatelessWidget {
   Future<void> _refreshProducts(context) async {
