@@ -22,8 +22,9 @@ class ProductItem extends StatelessWidget {
                 arguments: product.id);
             //whole product could also be forwarded, but following tutorial...
           },
-          child: Image.network(
-            product.imageURL,
+          child: FadeInImage(
+            placeholder: AssetImage('assets/images/product-placeholder.png'),
+            image: NetworkImage(product.imageURL),
             fit: BoxFit.cover,
           ),
         ),
