@@ -28,6 +28,11 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(RouteNames.ORDERS_SCREEN_ROUTE);
+//              Navigator.of(context).pushReplacement(
+//                CustomRoute(
+//                  builder: (ctx) => OrdersScreen(),
+//                ),
+//              );
             },
           ),
           ListTile(
