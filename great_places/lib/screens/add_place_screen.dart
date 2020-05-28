@@ -43,6 +43,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             icon: Icon(Icons.add),
             onPressed: () {},
             elevation: 0.0,
+            textColor: Theme.of(context).primaryColor,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             color: Theme.of(context).accentColor,
           )
