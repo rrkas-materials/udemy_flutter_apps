@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:great_places/providers/places.dart';
 import 'package:great_places/widgets/image_input.dart';
+import 'package:provider/provider.dart';
 
 class AddPlaceScreen extends StatefulWidget {
   static const routeName = '/add-place';
@@ -10,6 +14,16 @@ class AddPlaceScreen extends StatefulWidget {
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _titleController = TextEditingController();
+  File _pickedImage;
+
+  void _selectImage(File image) => _pickedImage = image;
+
+  void _savePlace() {
+    if (_titleController.text.isEmpty || _pickedImage == null) return;
+    Provider.of<Places>(context, listen: false)
+        .addPlace(_titleController.text, _pickedImage);
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +46,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                       controller: _titleController,
                     ),
                     SizedBox(height: 10),
-                    ImageInput(),
+                    ImageInput(_selectImage),
                   ],
                 ),
               ),
@@ -41,7 +55,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           RaisedButton.icon(
             label: Text('Add Place'),
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: _savePlace,
             elevation: 0.0,
             textColor: Theme.of(context).primaryColor,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
