@@ -20,22 +20,29 @@ class PlacesListScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Consumer<Places>(
-        child: const Text('No places added!'),
-        builder: (BuildContext context, value, Widget child) =>
-            value.items.length == 0
-                ? Center(child: child)
-                : ListView.builder(
-                    itemCount: value.items.length,
-                    itemBuilder: (ctx, idx) => ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: FileImage(value.items[idx].image),
-                      ),
-                      title: Text(value.items[idx].title),
-                      onTap: () {
-                        //go to detail page
-                      },
-                    ),
+      body: FutureBuilder(
+        future: Provider.of<Places>(context, listen: false).fetchAndSet(),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(child: CircularProgressIndicator())
+                : Consumer<Places>(
+                    child: const Text('No places added!'),
+                    builder: (BuildContext context, value, Widget child) =>
+                        value.items.length == 0
+                            ? Center(child: child)
+                            : ListView.builder(
+                                itemCount: value.items.length,
+                                itemBuilder: (ctx, idx) => ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage:
+                                        FileImage(value.items[idx].image),
+                                  ),
+                                  title: Text(value.items[idx].title),
+                                  onTap: () {
+                                    //go to detail page
+                                  },
+                                ),
+                              ),
                   ),
       ),
     );
