@@ -13,6 +13,10 @@ class Places with ChangeNotifier {
   static const String TITLE = 'title';
   static const String IMAGE = 'image';
 
+  Place findById(String id) {
+    return _items.firstWhere((element) => element.id == id, orElse: () => null);
+  }
+
   void addPlace(String title, File image) {
     final newPlace = Place(
       id: DateTime.now().toIso8601String(),
