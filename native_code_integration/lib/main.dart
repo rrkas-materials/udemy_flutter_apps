@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -30,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _getBatteryLevel() async {
     const platform = MethodChannel('rrkas.native/battery');
     try {
-      final batteryLevel = await platform.invokeMethod('getBatteryLevel');
+      final batteryLevel = await platform.invokeMethod<int>('getBatteryLevel');
       setState(() => _batteryLevel = batteryLevel);
     } on PlatformException catch (e) {
       setState(() => _batteryLevel = null);
@@ -40,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    _getBatteryLevel();
     super.initState();
   }
 
@@ -47,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Native Code`'),
+        title: Text('Native Code'),
       ),
       body: Center(
         child: Text('Battery level : $_batteryLevel'),
