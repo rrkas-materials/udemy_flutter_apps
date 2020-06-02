@@ -1,19 +1,22 @@
-import './adapive_button.dart';
+import 'package:expenseplanner/models/transaction.dart';
 import 'package:flutter/cupertino.dart';
-import '../util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class NewTransaction extends StatefulWidget {
-  final Function addNewTransaction;
+import './adapive_button.dart';
+import '../util.dart';
 
-  NewTransaction(this.addNewTransaction);
+class AddModifyTransaction extends StatefulWidget {
+  final Function function;
+  final Transaction transaction;
+
+  AddModifyTransaction(this.function, [this.transaction]);
 
   @override
-  _NewTransactionState createState() => _NewTransactionState();
+  _AddModifyTransactionState createState() => _AddModifyTransactionState();
 }
 
-class _NewTransactionState extends State<NewTransaction> {
-
+class _AddModifyTransactionState extends State<AddModifyTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime _selectedDate;
@@ -29,8 +32,17 @@ class _NewTransactionState extends State<NewTransaction> {
 
     enteredTitle = enteredTitle.trim();
 
-    widget.addNewTransaction(enteredTitle, enteredAmount, _selectedDate);
-
+    if (widget.transaction != null)
+      widget.function(
+        Transaction(
+          id: widget.transaction.id,
+          title: enteredTitle,
+          amount: enteredAmount,
+          date: _selectedDate,
+        ),
+      );
+    else
+      widget.function(enteredTitle, enteredAmount, _selectedDate);
     Navigator.of(context).pop();
   }
 
@@ -42,10 +54,23 @@ class _NewTransactionState extends State<NewTransaction> {
       lastDate: DateTime.now(),
     ).then((pickedDate) {
       if (pickedDate == null) return;
+      setState(() => _selectedDate = pickedDate);
+    });
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero).then((_) {
       setState(() {
-        _selectedDate = pickedDate;
+        if (widget.transaction != null) {
+          _titleController.text = widget.transaction.title;
+          _amountController.text = widget.transaction.amount.toString();
+          _selectedDate = widget.transaction.date;
+        }
       });
     });
+    super.initState();
   }
 
   @override
@@ -55,26 +80,29 @@ class _NewTransactionState extends State<NewTransaction> {
     return Card(
       elevation: 5,
       child: Container(
-        height: 250 + (mq.viewInsets.bottom + mq.padding.bottom) * 2,
+        height: 250 +
+            (mq.orientation == Orientation.portrait ? 0 : 100) +
+            (mq.viewInsets.bottom + mq.padding.bottom) * 2,
         padding:
             const EdgeInsets.only(top: 10, left: 10, bottom: 10, right: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: const InputDecoration(labelText: 'Title'),
-              controller: _titleController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            TextField(
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Amount'),
-              onSubmitted: (_) => _submitData(),
-              controller: _amountController,
-            ),
-            Expanded(
-              child: Padding(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: const InputDecoration(labelText: 'Title'),
+                controller: _titleController,
+//              onSubmitted: (_) => _submitData(),
+              ),
+              TextField(
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: 'Amount'),
+//              onSubmitted: (_) => _submitData(),
+                controller: _amountController,
+              ),
+              Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(
                   children: <Widget>[
@@ -87,9 +115,7 @@ class _NewTransactionState extends State<NewTransaction> {
                   ],
                 ),
               ),
-            ),
-            Flexible(
-              child: Container(
+              Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.centerRight,
                 child: RaisedButton(
@@ -105,8 +131,8 @@ class _NewTransactionState extends State<NewTransaction> {
                   onPressed: _submitData,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

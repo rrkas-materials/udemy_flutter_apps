@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:expenseplanner/helpers/local_db_helper.dart';
+import 'package:expenseplanner/widgets/new_transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import './models/transaction.dart';
 import './util.dart';
 import './widgets/chart.dart';
-import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
 
 void main() {
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Expense Planner',
       home: MyHomePage(),
     );
@@ -32,12 +34,22 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Transaction> _userTransactions = [];
   bool _showChart = true;
+
 //  bool _isUpdating = false;
 
   @override
   void initState() {
     super.initState();
-//    _isUpdating = false;
+//    Future.delayed(Duration.zero).then((_){
+    LocalDbHelper.retrieveTransactions.then((trs) => _userTransactions = trs);
+//    });
+  }
+
+  void deleteAll() {
+    setState(() {
+      _userTransactions = [];
+    });
+    LocalDbHelper.deleteAllRecords();
   }
 
   List<Transaction> get _recentTransactions {
@@ -67,16 +79,42 @@ class _MyHomePageState extends State<MyHomePage> {
       date: chosenDate,
       id: DateTime.now().toString(),
     );
-
     setState(() {
       _userTransactions.add(newTx);
     });
+    LocalDbHelper.storeTransaction(newTx);
   }
 
   void _deleteTransaction(String id) {
     setState(() {
       _userTransactions.removeWhere((element) => element.id == id);
     });
+    LocalDbHelper.deleteTransactionById(id);
+  }
+
+  void _editTransaction(Transaction transaction) {
+    setState(
+      () {
+        final idx = _userTransactions
+            .indexWhere((element) => element.id == transaction.id);
+        _userTransactions.removeAt(idx);
+        _userTransactions.insert(idx, transaction);
+      },
+    );
+    LocalDbHelper.updateTransaction(transaction);
+  }
+
+  void _startEditTransaction(Transaction transaction) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+          child: AddModifyTransaction(_editTransaction, transaction),
+        );
+      },
+    );
   }
 
   void _startAddNewTransaction(BuildContext ctx) {
@@ -86,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return GestureDetector(
           onTap: () {},
           behavior: HitTestBehavior.opaque,
-          child: NewTransaction(_addNewTransaction),
+          child: AddModifyTransaction(_addNewTransaction),
         );
       },
     );
@@ -146,12 +184,13 @@ class _MyHomePageState extends State<MyHomePage> {
             title: title,
             actions: <Widget>[
               IconButton(
-                icon: const Icon(
-                  Icons.apps,
-                  color: Colors.cyanAccent,
-                ),
-                onPressed: () {},
-              )
+                onPressed: deleteAll,
+                icon: Icon(Icons.delete_sweep),
+              ),
+//              IconButton(
+//                icon: const Icon(Icons.event),
+//                onPressed: () {},
+//              )
             ],
           );
     final ded = appbar.preferredSize.height +
@@ -205,6 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return TransactionList(
             _sortedTransactions,
             _deleteTransaction,
+            _startEditTransaction,
             c.maxHeight,
             c.maxWidth,
             isLandscape,
@@ -216,6 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return TransactionList(
             _sortedTransactions,
             _deleteTransaction,
+            _startEditTransaction,
             c.maxHeight,
             c.maxWidth,
             isLandscape,
@@ -275,4 +316,3 @@ class _MyHomePageState extends State<MyHomePage> {
           );
   }
 }
-//todo: add database to store the inputs...

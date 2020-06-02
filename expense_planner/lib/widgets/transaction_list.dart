@@ -6,13 +6,13 @@ import '../util.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
-  final Function deleteTransaction;
+  final Function deleteTransaction, editTransaction;
   final double maxHeight;
   final double maxWidth;
   final bool isLandscape;
 
   const TransactionList(this.transactions, this.deleteTransaction,
-      this.maxHeight, this.maxWidth, this.isLandscape);
+      this.editTransaction, this.maxHeight, this.maxWidth, this.isLandscape);
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +49,7 @@ class TransactionList extends StatelessWidget {
                             key: ValueKey(e.id),
                             e: e,
                             deleteTransaction: deleteTransaction,
+                            editTransaction: editTransaction,
                             maxWidth: maxWidth * 0.9,
                           ),
                         )

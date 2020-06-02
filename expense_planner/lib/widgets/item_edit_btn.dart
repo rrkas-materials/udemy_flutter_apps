@@ -1,6 +1,6 @@
-import '../models/transaction.dart';
 import 'package:flutter/material.dart';
 
+import '../models/transaction.dart';
 import '../util.dart';
 
 class ListItemEditButton extends StatelessWidget {
@@ -15,7 +15,7 @@ class ListItemEditButton extends StatelessWidget {
     return width > 460
         ? FlatButton.icon(
             color: Util.editBtnBg,
-            onPressed: () => editTx(tx.id),
+            onPressed: () => editTx(tx),
             icon: const Icon(
               Icons.edit,
               color: Util.editIconColor,
@@ -29,7 +29,7 @@ class ListItemEditButton extends StatelessWidget {
               color: Util.editIconColor,
             ),
             color: Util.editIconColor,
-            onPressed: () => editTx(tx.id),
+            onPressed: () => editTx(tx),
           );
   }
 }
